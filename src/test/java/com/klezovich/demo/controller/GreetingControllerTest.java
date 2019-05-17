@@ -4,6 +4,7 @@ import com.klezovich.demo.model.Greeting;
 import com.klezovich.demo.service.GreetingService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.ui.Model;
 
@@ -37,7 +38,10 @@ public class GreetingControllerTest {
 
         var greeting = controller.getGreeting(model);
         assertEquals(expGreeting, greeting);
+
+        var captor = ArgumentCaptor.forClass(String.class);
         verify(service, times(1)).getRandomGreeting();
-        verify(model, times(1)).addAttribute(eq("greeting"), anyString());
+        verify(model, times(1)).addAttribute(eq("greeting"), captor.capture() );
+        assertEquals( expGreeting, captor.getValue());
     }
 }
