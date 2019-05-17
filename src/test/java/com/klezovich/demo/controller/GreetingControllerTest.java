@@ -6,11 +6,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class GreetingControllerTest {
 
@@ -27,6 +31,17 @@ public class GreetingControllerTest {
 
         initMocks(this);
         controller = new GreetingController(service);
+    }
+
+    @Test
+    public void testMockMvc() throws Exception {
+
+        var mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        when(service.getRandomGreeting()).thenReturn(new Greeting("Hola"));
+
+        mockMvc.perform(get("/hello"))
+                .andExpect(status().isOk() );
     }
 
 
